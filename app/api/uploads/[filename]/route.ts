@@ -8,7 +8,12 @@ export async function GET(_: Request, { params }: { params: { filename: string }
   const filename = path.basename(params.filename);
   if (filename !== params.filename) return new NextResponse("Not found", { status: 404 });
   try {
-    const file = await readFile(path.join(process.cwd(), "public", "uploads", filename));
+    let file: Buffer;
+    try {
+      file = await readFile(path.join(process.cwd(), "data", "uploads", filename));
+    } catch {
+      file = await readFile(path.join(process.cwd(), "public", "uploads", filename));
+    }
     const extension = filename.split(".").pop()?.toLowerCase() || "";
     return new NextResponse(file, { headers: { "Content-Type": types[extension] || "application/octet-stream", "Cache-Control": "public, max-age=31536000, immutable" } });
   } catch {

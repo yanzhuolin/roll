@@ -75,7 +75,8 @@ export async function deleteOrder(id: string, username: string) {
   store.orders.splice(index, 1); await writeStore(store);
   if (order.imageUrl) {
     const filename = path.basename(order.imageUrl);
-    await fs.unlink(path.join(process.cwd(), "public", "uploads", filename)).catch(() => undefined);
+    await fs.unlink(path.join(process.cwd(), "data", "uploads", filename)).catch(async () => { await fs.unlink(path.join(process.cwd(), "public", "uploads", filename)).catch(() => undefined); });
   }
   return { order };
 }
+
